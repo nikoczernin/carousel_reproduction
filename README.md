@@ -13,7 +13,16 @@ https://github.com/deezer/carousel_bandits
   year={2020}
 }
 
-## Data
+
+## Installation
+### Notebook
+    pip install jupyter
+    # all other dependencies are installed via the notebook
+    jupyter-notebook reproduction.ipynb
+    
+
+
+### Data
 The original datasets are not included in the original repo and neither in this one.  
 To run your tests, download the data here and put them in the data folder!  
 https://zenodo.org/record/4048678#.X22w4pMza3J
