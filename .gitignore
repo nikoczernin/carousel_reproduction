@@ -2,4 +2,3 @@
 .idea
 .ipynb_checkpoints
 data/user_features.csv
-data/playlist_features.csv
