@@ -1,5 +1,8 @@
 .DS_Store
 .idea
 .ipynb_checkpoints
+data/split
+data/splitL
 data/user_features.csv
 data/playlist_features.csv
+data/user_features_s.csv
