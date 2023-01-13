@@ -29,31 +29,36 @@ def set_policies(policies_name, user_segment, user_features, n_playlists):
     return [POLICIES_SETTINGS[name] for name in policies_name]
 
 
-if __name__ == "__main__":
+def run_experiment(
+        users_path="data/user_features.csv",
+        playlists_path="data/playlist_features.csv",
+        output_path="results.json",
+        policies="random,ts-seg-naive",
+        n_recos=12,
+        l_init=3,
+        n_users_per_round=20000,
+        n_rounds=100,
+        print_every=10,
+        user_indices=None
+    ):
 
-    # Arguments
+    class Arguments:
+        def __init__(self, users_path, playlists_path, output_path, policies,
+                     n_recos, l_init, n_users_per_round, n_rounds, print_every,
+                     user_indices):
+            self.users_path = users_path
+            self.playlists_path = playlists_path
+            self.output_path = output_path
+            self.policies = policies
+            self.n_recos = n_recos
+            self.l_init = l_init
+            self.n_users_per_round = n_users_per_round
+            self.n_rounds = n_rounds
+            self.print_every = print_every
+            self.user_indices = user_indices
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--users_path", type = str, default = "data/user_features.csv", required = False,
-                        help = "Path to user features file")
-    parser.add_argument("--playlists_path", type = str, default = "data/playlist_features.csv", required = False,
-                        help = "Path to playlist features file")
-    parser.add_argument("--output_path", type = str, default = "results.json", required = False,
-                        help = "Path to json file to save regret values")
-    parser.add_argument("--policies", type = str, default = "random,ts-seg-naive", required = False,
-                        help = "Bandit algorithms to evaluate, separated by commas")
-    parser.add_argument("--n_recos", type = int, default = 12, required = False,
-                        help = "Number of slots L in the carousel i.e. number of recommendations to provide")
-    parser.add_argument("--l_init", type = int, default = 3, required = False,
-                        help = "Number of slots L_init initially visible in the carousel")
-    parser.add_argument("--n_users_per_round", type = int, default = 20000, required = False,
-                        help = "Number of users randomly selected (with replacement) per round")
-    parser.add_argument("--n_rounds", type = int, default = 100, required = False,
-                        help = "Number of simulated rounds")
-    parser.add_argument("--print_every", type = int, default = 10, required = False,
-                        help = "Print cumulative regrets every 'print_every' round")
 
-    args = parser.parse_args()
+    args = Arguments(users_path, playlists_path, output_path, policies, n_recos, l_init, n_users_per_round, n_rounds, print_every, user_indices)
 
     logging.basicConfig(level = logging.INFO)
     logger = logging.getLogger(__name__)
@@ -71,7 +76,12 @@ if __name__ == "__main__":
     logger.info("Loading user data\n \n")
     users_df = pd.read_csv(args.users_path)
 
+    # limit the dataset, if user indicces are given
+    if args.user_indices is not None:
+        users_df = users_df.iloc[args.user_indices]
+
     n_users = len(users_df)
+
     n_playlists = len(playlists_df)
     n_recos = args.n_recos
     print_every = args.print_every
@@ -93,7 +103,12 @@ if __name__ == "__main__":
     policies_name = args.policies.split(",")
     policies = set_policies(policies_name, user_segment, user_features, n_playlists)
     n_policies = len(policies)
-    n_users_per_round = args.n_users_per_round
+
+    if args.n_users_per_round is not None:
+        n_users_per_round = args.n_users_per_round
+    else:
+        n_users_per_round = n_users
+
     n_rounds = args.n_rounds
     overall_rewards = np.zeros((n_policies, n_rounds))
     overall_optimal_reward = np.zeros(n_rounds)
@@ -127,5 +142,12 @@ if __name__ == "__main__":
 
     logger.info("Saving cumulative regrets in %s" % args.output_path)
     cumulative_regrets = {policies_name[j] : list(np.cumsum(overall_optimal_reward - overall_rewards[j])) for j in range(n_policies)}
-    with open(f"output/{args.output_path}", 'w') as fp:
+    with open(f"{args.output_path}", 'w') as fp:
         json.dump(cumulative_regrets, fp)
+
+
+
+
+
+if __name__ == "__main__":
+    run_experiment()
