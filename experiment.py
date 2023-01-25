@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import time
 
+
 # List of implemented policies
 def set_policies(policies_name, user_segment, user_features, n_playlists):
     # Please see section 3.3 of RecSys paper for a description of policies
@@ -75,6 +76,19 @@ def run_experiment(
 
     logger.info("Loading user data\n \n")
     users_df = pd.read_csv(args.users_path)
+
+    def numbers_only(series, replace_with=0, type="float"):
+        # replace string values in the df with replace_with
+        def num_only(x):
+            try:
+                float(x)
+                return x
+            except ValueError:
+                return replace_with
+        return series.apply(lambda x: num_only(x))
+    users_df = users_df.apply(numbers_only, 0)
+
+
 
     # limit the dataset, if user indicces are given
     if args.user_indices is not None:
