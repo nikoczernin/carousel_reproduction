@@ -7,4 +7,8 @@ data/splitL
 data/user_features.csv
 data/playlist_features.csv
 data/user_features_s.csv
+<<<<<<< HEAD
 .Rhistory
+=======
+.Rhistory
+>>>>>>> e73dd6cccb3f4daa324eff69864f783ec6bd7730
