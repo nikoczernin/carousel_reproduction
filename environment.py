@@ -30,6 +30,7 @@ class ContextualEnvironment():
     def compute_optimal_recos(self, batch_user_ids, n):
         batch_user_features = np.take(self.user_features, batch_user_ids, axis = 0)
         n_users = len(batch_user_ids)
+
         probas = batch_user_features.dot(self.playlist_features.T)
         optim = np.argsort(-probas)[:, :n]
         # return the list of indices in order
