@@ -1,5 +1,8 @@
 # carousel_reproduction
-we be reproducing that one paper which runs perfectly and we pretend that we know better 
+Welcome to our reproduction repository for **Carousel Personalization in Music Streaming Apps with Contextual Bandits**! Here, we're diving into the novel recommendation system approaches used by Bendada et al, aiming to replicate their  findings and results. Our goal? To validate and possibly enhance the existing research.
+
+In this repo, you'll find everything needed to recreate the experiments from **Carousel Personalization in Music Streaming Apps with Contextual Bandits**. 
+
 
 # carousel_reproduction
 we be reproducing that one paper which runs perfectly and we pretend that we know better   
